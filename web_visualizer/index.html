@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEREBRO C++ • Estación de Ingeniería Radar Wi-Fi CSI & Red SNN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <!-- Three.js y OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="status-pulse-wrapper">
+                <span class="status-pulse"></span>
+            </div>
+            <div>
+                <h1>CEREBRO <span class="badge-version">ENGINEERING WORKSTATION v3.0</span></h1>
+                <p class="tagline">Telemetría de Radiofrecuencia 802.11 CSI • Interferometría de Fase • Red Neuromórfica SNN (274N)</p>
+            </div>
+        </div>
+        
+        <div class="header-controls">
+            <div class="header-metric-badge">
+                <span class="badge-label">SNR Estimado</span>
+                <strong class="badge-val text-green" id="val-snr">0.0 dB</strong>
+            </div>
+            <div class="header-metric-badge">
+                <span class="badge-label">Tasa Paquetes</span>
+                <strong class="badge-val text-cyan" id="val-pps">~150 fps</strong>
+            </div>
+            <div class="hw-badge-group">
+                <span class="hw-badge" id="hw-status-badge">
+                    <span class="hw-dot"></span>
+                    <span id="hw-status-text">ESP32 DUAL CONECTADO</span>
+                </span>
+            </div>
+            <div id="sim-state-badge" class="state-badge state-awake">AWAKE</div>
+            <a href="demo.html" style="padding: 0.35rem 0.85rem; background: rgba(0, 229, 255, 0.12); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 6px; color: var(--color-cyan); text-decoration: none; font-size: 0.72rem; font-weight: 700; font-family: var(--font-mono);">🎬 Modo Demostración</a>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        <!-- Panel Izquierdo: Telemetría de Radiofrecuencia (PHY & Radar) -->
+        <aside class="sidebar-panel">
+            <!-- Tarjeta 1: Analizador de Espectro CSI (64 Subportadoras) -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <span class="card-icon">📊</span>
+                    <h2>Espectro CSI en Vivo (64 Subportadoras)</h2>
+                </div>
+                <div class="chart-container" style="height: 155px;">
+                    <canvas id="csiSpectrumChart"></canvas>
+                </div>
+                <div class="rf-stats-mini-grid">
+                    <div><span>RSSI Rx1 (COM3):</span> <strong id="rx1-rssi">-58 dBm</strong></div>
+                    <div><span>RSSI Rx2 (COM4):</span> <strong id="rx2-rssi">-72 dBm</strong></div>
+                    <div><span>Paquetes Rx1:</span> <strong id="rx1-pkts">0</strong></div>
+                    <div><span>Paquetes Rx2:</span> <strong id="rx2-pkts">0</strong></div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Cinemática Polar de Radar (AoA & Doppler) -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <span class="card-icon">🧭</span>
+                    <h2>Radar Cinemático Polar & AoA</h2>
+                </div>
+                <div class="spatial-radar-grid">
+                    <div class="spatial-radar-box">
+                        <div class="radar-val" id="val-aoa-angle">0.0°</div>
+                        <div class="radar-lbl">Ángulo Azimut (AoA)</div>
+                    </div>
+                    <div class="spatial-radar-box">
+                        <div class="radar-val text-cyan" id="val-aoa-dist">0.0 m</div>
+                        <div class="radar-lbl">Distancia Radial</div>
+                    </div>
+                </div>
+                <div class="radar-coord-row">
+                    <span>Posición: <strong id="val-aoa-coords">X: 0.0m, Y: 0.0m</strong></span>
+                    <span>Velocidad: <strong class="text-yellow" id="val-aoa-vel">0.00 m/s</strong></span>
+                </div>
+                <div class="radar-coord-row" style="margin-top: 0.4rem;">
+                    <span>Centroide Doppler: <strong id="val-doppler-c">0.0 Hz</strong></span>
+                    <span>Dispersión: <strong id="val-doppler-s">0.0 Hz</strong></span>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Clasificador Multiclase Physarum & Ganglios Basales -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <span class="card-icon">⚖️</span>
+                    <h2>Decisión de Presencia & Biometría</h2>
+                </div>
+                <div class="decision-status-row">
+                    <div>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Decisión Fina (Physarum):</span>
+                        <div class="decision-label" id="val-physarum-target" style="color: #ffea00; border-color: rgba(255, 234, 0, 0.4); background: rgba(255, 234, 0, 0.1);">VACIO</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Certeza:</span>
+                        <div style="font-size: 1.15rem; font-weight: 800; font-family: var(--font-mono); color: var(--color-green);" id="val-physarum-conf">0%</div>
+                    </div>
+                </div>
+                <div class="cerebellum-row">
+                    <span>Similaridad Siamesa Genuina:</span>
+                    <strong class="text-green" id="val-genuine">0.000</strong>
+                </div>
+                <div class="cerebellum-row">
+                    <span>Túbulos Vivos / Poda (Physarum):</span>
+                    <strong id="val-physarum-tubules">0 / 0</strong>
+                </div>
+                <div class="cerebellum-row">
+                    <span>Sustrato Micelial (Anti-Drift / Dwell):</span>
+                    <strong style="color: #00ffaa;" id="val-myc-info">0.00 dB | 0m 0s</strong>
+                </div>
+            </div>
+
+            <!-- Tarjeta 4: Neuromoduladores y Plasticidad STDP -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <span class="card-icon">🧪</span>
+                    <h2>Neuromoduladores & Plasticidad W</h2>
+                </div>
+                <div class="chart-container" style="height: 120px;">
+                    <canvas id="neuroChart"></canvas>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Panel Central/Derecho: Visualizador 3D y Diagnóstico de Población Neuromórfica -->
+        <section class="visualizer-container">
+            <div class="glass-card visualizer-card">
+                <div class="visualizer-header">
+                    <div class="viz-title-group">
+                        <h2>Topología 3D de la Red SNN (274 Neuronas • LIF Multicompartimental)</h2>
+                        <span class="viz-subtitle">Renderizado de potenciales de acción, conductancias sinápticas y morfogénesis protoplásmica</span>
+                    </div>
+                    <div class="viz-controls">
+                        <button class="btn-control" id="btn-reset-cam">Restablecer Vista</button>
+                        <button class="btn-control" id="btn-toggle-rotate">Auto-Rotación: ON</button>
+                    </div>
+                </div>
+
+                <div id="canvas-container" style="height: 380px;"></div>
+
+                <div class="layer-legend-bar">
+                    <div class="legend-chip"><span class="chip-dot" style="background:#00e5ff"></span>Sensorial CSI (0..127)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#4466ff"></span>Oculta (128..177)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#ffa200"></span>Tálamo (178..187)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#b000ff"></span>PFC / Memoria (188..213)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#ff3366"></span>Motora / Salida (214..243)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#00ff88"></span>Entorrinal (244..253)</div>
+                    <div class="legend-chip"><span class="chip-dot" style="background:#ffea00"></span>Hipocampo (254..273)</div>
+                </div>
+            </div>
+
+            <!-- Tarjeta Inferior: Tabla de Diagnóstico de Población Neuronal -->
+            <div class="glass-card" style="margin-top: 1rem;">
+                <div class="card-title">
+                    <span class="card-icon">🔬</span>
+                    <h2>Diagnóstico de Población Neuromórfica por Capas (Salud y Actividad)</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="eng-table">
+                        <thead>
+                            <tr>
+                                <th>Capa Anatómica</th>
+                                <th>Neuronas</th>
+                                <th>Tasa Media (Hz)</th>
+                                <th>Pico Máx (Hz)</th>
+                                <th>Voltaje Vm</th>
+                                <th>Silenciosas (<1Hz)</th>
+                                <th>Saturadas (>80Hz)</th>
+                                <th>Estado de Capa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="layer-table-body">
+                            <!-- Filas generadas dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-item">Paso: <strong id="val-steps">0</strong></div>
+        <div class="footer-separator">•</div>
+        <div class="footer-item">Tiempo Biológico: <strong id="val-time">0.0</strong>s</div>
+        <div class="footer-separator">•</div>
+        <div class="footer-item">Spikes Lote: <strong class="text-cyan" id="val-spikes">0</strong></div>
+        <div class="footer-separator">•</div>
+        <div class="footer-item">Sinapsis Activas: <strong class="text-magenta" id="val-synapses">0</strong></div>
+        <div class="footer-separator">•</div>
+        <div class="footer-item">Peso Medio (W): <strong class="text-green" id="val-weight">0.00</strong></div>
+        <div class="footer-separator">•</div>
+        <div class="footer-item">Motor: <strong>C++ Nativo Multihilo (Win32 Asíncrono)</strong></div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

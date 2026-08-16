@@ -1,0 +1,24 @@
+# Binaries and build artifacts
+*.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.lib
+*.dll
+*.exp
+*.log
+*.tmp
+*.bak
+
+# State and dynamic logs
+logs/
+build/
+.vs/
+.vscode/
+.idea/
+*.bin
+
+# OS artifacts
+Thumbs.db
+.DS_Store

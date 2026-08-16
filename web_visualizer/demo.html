@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEREBRO • Radar Biomédico y Detector de Presencia Wi-Fi CSI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="demo.css">
+    <!-- Three.js y OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="demo-header">
+        <div class="demo-brand">
+            <div class="live-pill">
+                <span class="live-dot"></span>
+                <span>DEMOSTRACIÓN EN VIVO</span>
+            </div>
+            <div>
+                <h1>CEREBRO • <span class="highlight-text">Radar Biomédico Wi-Fi CSI</span></h1>
+                <p class="demo-subtitle">Detección de Presencia, Identificación de Sujeto y Signos Vitales Sin Contacto • 274 Neuronas Spiking (SNN)</p>
+            </div>
+        </div>
+
+        <div class="demo-header-right">
+            <div class="hw-chip">
+                <span class="chip-dot"></span>
+                <span>ESP32 DUAL • 150 Hz CSI</span>
+            </div>
+            <a href="index.html" class="btn-switch-mode">⚙️ Estación de Ingeniería</a>
+        </div>
+    </header>
+
+    <main class="demo-grid">
+        <!-- BLOQUE IZQUIERDO: CLASIFICACIÓN DE PRESENCIA & IDENTIDAD -->
+        <aside class="demo-col demo-col-left">
+            <!-- Tarjeta Principal de Clasificación -->
+            <div class="demo-card hero-status-card" id="card-hero-status">
+                <div class="card-badge-top">DECISIÓN DE LA RED NEURONAL</div>
+                <div class="hero-icon-container" id="hero-icon">👤</div>
+                <div class="hero-class-label" id="hero-label">HUMANO DETECTADO</div>
+                <div class="hero-sublabel" id="hero-sublabel">Sujeto Autorizado (Perfil Genuino)</div>
+
+                <div class="confidence-container">
+                    <div class="confidence-header">
+                        <span>Certeza de la Red</span>
+                        <strong id="hero-confidence-text">95%</strong>
+                    </div>
+                    <div class="confidence-bar-bg">
+                        <div class="confidence-bar-fill" id="hero-confidence-bar" style="width: 95%;"></div>
+                    </div>
+                </div>
+
+                <div class="activity-chip-wrapper">
+                    <span class="activity-label-tag">Dinámica Actual:</span>
+                    <div class="activity-badge" id="hero-activity-badge">REPOSO / RESPIRACIÓN</div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Autenticación Biométrica Siamesa -->
+            <div class="demo-card">
+                <div class="demo-card-title">
+                    <span class="title-icon">🎯</span>
+                    <h3>Biometría de Ondas Wi-Fi (STDP)</h3>
+                </div>
+                <div class="biometric-row">
+                    <span>Firma Biométrica Genuina:</span>
+                    <strong class="text-glow-green" id="bio-genuine-val">0.742</strong>
+                </div>
+                <div class="bio-bar-bg">
+                    <div class="bio-bar-fill" id="bio-genuine-bar" style="width: 74%;"></div>
+                </div>
+                <p class="demo-explain-text">
+                    La red aprende la silueta de absorción RF de tu cuerpo mediante plasticidad hebbiana sináptica contrastiva.
+                </p>
+            </div>
+        </aside>
+
+        <!-- BLOQUE CENTRAL: GEMELO DIGITAL 3D DEL CEREBRO -->
+        <section class="demo-col demo-col-center">
+            <div class="demo-card canvas-card">
+                <div class="canvas-header">
+                    <div>
+                        <h3>Gemelo Digital Cortical (274 Neuronas Spiking)</h3>
+                        <p class="canvas-sub">Las neuronas sensoriales captan la onda RF, el tálamo oscila con la respiración y los ganglios basales deciden</p>
+                    </div>
+                    <div class="canvas-actions">
+                        <button class="btn-canvas-ctrl" id="btn-demo-reset">Centrar</button>
+                    </div>
+                </div>
+
+                <div id="demo-canvas-container"></div>
+
+                <div class="demo-legend">
+                    <div class="legend-item"><span class="dot" style="background:#00e5ff"></span>Sensorial CSI</div>
+                    <div class="legend-item"><span class="dot" style="background:#4466ff"></span>Oculta</div>
+                    <div class="legend-item"><span class="dot" style="background:#ffa200"></span>Tálamo</div>
+                    <div class="legend-item"><span class="dot" style="background:#b000ff"></span>PFC Memoria</div>
+                    <div class="legend-item"><span class="dot" style="background:#ff3366"></span>Motora Decisión</div>
+                    <div class="legend-item"><span class="dot" style="background:#ffea00"></span>Moho Physarum</div>
+                    <div class="legend-item"><span class="dot" style="background:#00ffaa"></span>Micelio Fúngico</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOQUE DERECHO: MONITOR DE SIGNOS VITALES & SUSTRATO MICELIAL -->
+        <aside class="demo-col demo-col-right">
+            <!-- Frecuencia Cardíaca (BPM) -->
+            <div class="demo-card vital-card">
+                <div class="vital-card-header">
+                    <div class="vital-title-group">
+                        <span class="vital-icon heart-pulse">❤️</span>
+                        <div>
+                            <h3>Frecuencia Cardíaca</h3>
+                            <span class="vital-sub">Micro-desplazamiento torácico</span>
+                        </div>
+                    </div>
+                    <div class="vital-number-group">
+                        <span class="vital-big-num text-glow-red" id="vital-bpm">72</span>
+                        <span class="vital-unit">BPM</span>
+                    </div>
+                </div>
+                <div class="vital-chart-wrapper">
+                    <canvas id="ecgWaveChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Frecuencia Respiratoria (RPM) -->
+            <div class="demo-card vital-card">
+                <div class="vital-card-header">
+                    <div class="vital-title-group">
+                        <span class="vital-icon breath-pulse">🫁</span>
+                        <div>
+                            <h3>Frecuencia Respiratoria</h3>
+                            <span class="vital-sub">Expansión volumétrica pulmonar</span>
+                        </div>
+                    </div>
+                    <div class="vital-number-group">
+                        <span class="vital-big-num text-glow-cyan" id="vital-rpm">16</span>
+                        <span class="vital-unit">RPM</span>
+                    </div>
+                </div>
+                <div class="vital-chart-wrapper">
+                    <canvas id="respWaveChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sustrato Micelial & Anti-Drift -->
+            <div class="demo-card mycelium-card" style="border: 1px solid rgba(0, 255, 170, 0.25); background: rgba(0, 255, 170, 0.03); border-radius: 12px; padding: 14px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">🍄</span>
+                        <strong style="color: #00ffaa; font-size: 0.9rem; letter-spacing: 0.5px;">SUSTRATO MICELIAL (FUNGAL SNN)</strong>
+                    </div>
+                    <span style="font-size: 0.75rem; background: rgba(0,255,170,0.15); color: #00ffaa; padding: 2px 6px; border-radius: 4px; font-weight: 600;">ANTI-DRIFT</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 6px;">
+                        <span style="color: #8b95b5; display: block; font-size: 0.7rem;">Permanencia Sala:</span>
+                        <strong id="myc-dwell" style="color: #ffffff; font-size: 0.95rem;">0m 0s</strong>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 6px;">
+                        <span style="color: #8b95b5; display: block; font-size: 0.7rem;">Compensación RF:</span>
+                        <strong id="myc-drift" style="color: #00ffaa; font-size: 0.95rem;">0.00 dB</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sustrato Bio-Híbrido (Plantae + Fungi Quorum) -->
+            <div class="demo-card bio-hybrid-card" style="border: 1px solid rgba(0, 229, 255, 0.25); background: rgba(0, 229, 255, 0.03); border-radius: 12px; padding: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem;">🌿</span>
+                        <strong style="color: #00e5ff; font-size: 0.9rem; letter-spacing: 0.5px;">PLANTAE & QUORUM SENSING</strong>
+                    </div>
+                    <span id="quorum-label-badge" style="font-size: 0.75rem; background: rgba(0,229,255,0.15); color: #00e5ff; padding: 2px 6px; border-radius: 4px; font-weight: 600;">1 PERSONA</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 6px;">
+                        <span style="color: #8b95b5; display: block; font-size: 0.7rem;">Aforo Quorum:</span>
+                        <strong id="bio-quorum-occupants" style="color: #ffffff; font-size: 0.95rem;">1 Ocupante</strong>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 6px;">
+                        <span style="color: #8b95b5; display: block; font-size: 0.7rem;">Auxinas Beamforming:</span>
+                        <strong id="bio-auxin-steer" style="color: #00e5ff; font-size: 0.95rem;">+0.0° (+0dB)</strong>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- BLOQUE INFERIOR: RADAR 2D DE POSICIONAMIENTO EN SALA -->
+        <section class="demo-col-bottom">
+            <div class="demo-card radar-room-card">
+                <div class="radar-card-content">
+                    <div class="radar-visual-box">
+                        <canvas id="radarRoomCanvas" width="340" height="190"></canvas>
+                    </div>
+                    <div class="radar-info-box">
+                        <div class="radar-info-title">
+                            <span class="title-icon">🧭</span>
+                            <h3>Radar Interferométrico de Sala (AoA)</h3>
+                        </div>
+                        <div class="radar-metrics-grid">
+                            <div class="radar-stat-box">
+                                <span class="r-lbl">Ángulo Azimut:</span>
+                                <strong class="r-val text-glow-cyan" id="radar-angle">0.0°</strong>
+                            </div>
+                            <div class="radar-stat-box">
+                                <span class="r-lbl">Distancia Radial:</span>
+                                <strong class="r-val text-glow-green" id="radar-dist">0.0 m</strong>
+                            </div>
+                            <div class="radar-stat-box">
+                                <span class="r-lbl">Coordenadas Cartesianas:</span>
+                                <strong class="r-val" id="radar-coords">X: 0.0m, Y: 0.0m</strong>
+                            </div>
+                            <div class="radar-stat-box">
+                                <span class="r-lbl">Velocidad Radial:</span>
+                                <strong class="r-val text-glow-yellow" id="radar-vel">0.00 m/s</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="demo-footer">
+        <div>Demostración Académica de Tesis • <strong>Proyecto Cerebro SNN</strong></div>
+        <div>Muestreo RF: <strong>150 Tramas/seg (921,600 baudios)</strong> • Motor: <strong>C++ Nativo Multihilo</strong></div>
+    </footer>
+
+    <script src="demo.js"></script>
+</body>
+</html>
